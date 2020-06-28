@@ -29,6 +29,12 @@ router.post('/login', passport.authenticate('local', {
   failureRedirect: '/login'
 }));
 
+/* GET /logout user. */
+router.get('/logout', (req, res, next) => {
+  req.logout();
+  res.redirect('/');
+});
+
 /* GET user profile. */
 router.get('/profile', (req, res, next) => {
   res.send("this be the GET user profile");
