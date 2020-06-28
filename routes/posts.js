@@ -1,11 +1,11 @@
 /*jshint esversion: 6 */
-const express = require('express');
-const router = express.Router();
+const express           = require('express');
+const router            = express.Router();
+const { errorHandler }  = require('../middleware');
+const { getPosts }      = require('../controllers/posts');
 
 /* GET posts index /posts */
-router.get('/', (req, res, next) => {
-  res.send('this is the /posts page');
-});
+router.get('/', errorHandler(getPosts));
 
 /* GET new post /posts/new */
 router.get('/new', (req, res, next) => {
