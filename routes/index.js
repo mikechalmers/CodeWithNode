@@ -1,7 +1,9 @@
 /*jshint esversion: 6 */
 const express = require('express');
 const router = express.Router();
-const { postRegister } = require('../controllers/index');
+const passport      = require('passport');
+const { postRegister } = require('../controllers');
+const { errorHandler } = require('../middleware');
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
@@ -14,7 +16,7 @@ router.get('/register', (req, res, next) => {
 });
 
 /* POST /register user. */
-router.post('/register', postRegister);
+router.post('/register', errorHandler(postRegister));
 
 /* GET /login user. */
 router.get('/login', (req, res, next) => {
@@ -22,9 +24,10 @@ router.get('/login', (req, res, next) => {
 });
 
 /* POST /login user. */
-router.post('/login', (req, res, next) => {
-  res.send("this be the POST login user form");
-});
+router.post('/login', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/login'
+}));
 
 /* GET user profile. */
 router.get('/profile', (req, res, next) => {
