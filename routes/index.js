@@ -1,6 +1,7 @@
 /*jshint esversion: 6 */
 const express = require('express');
 const router = express.Router();
+const { postRegister } = require('../controllers/index');
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
@@ -13,9 +14,7 @@ router.get('/register', (req, res, next) => {
 });
 
 /* POST /register user. */
-router.post('/register', (req, res, next) => {
-  res.send("this be the POST register user form");
-});
+router.post('/register', postRegister);
 
 /* GET /login user. */
 router.get('/login', (req, res, next) => {

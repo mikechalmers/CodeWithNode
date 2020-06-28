@@ -9,9 +9,10 @@ const logger        = require('morgan');
 const bodyParser    = require('body-parser');
 const passport      = require('passport');
 const session       = require('express-session');
+const mongoose      = require('mongoose');
 
 // require user - passportLocalMongoose code
-const User = require('.models/user');
+const User = require('./models/user');
 
 // require routes
 const indexRouter     = require('./routes/index');
@@ -19,6 +20,17 @@ const postsRouter     = require('./routes/posts');
 const reviewsRouter   = require('./routes/reviews');
 
 const app = express();
+
+// mongoose setup
+var url = process.env.DATABASEURL || "mongodb://localhost/codeWithNode";
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true, });
+// mongoose console connection feedback
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => {
+  console.log('mongo connected');
+});
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -31,6 +43,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // configure ExpressSessions - has to be before passport
+app.use(session({
+  secret: 'kick me under the table all you want',
+  resave: false,
+  saveUninitialized: true
+}));
 
 // configure Passport - passportLocalMongoose code
 passport.use(User.createStrategy());
