@@ -1,29 +1,28 @@
 /*jshint esversion: 6 */
 const express                     = require('express');
 const router                      = express.Router();
-const { errorHandler }            = require('../middleware');
-const { getPosts,
-        newPost,
-        createPost,
-        showPost
+const { asyncErrorHandler }            = require('../middleware');
+const { postIndex,
+        postNew,
+        postCreate,
+        postShow,
+        postEdit
       } = require('../controllers/posts');
 
 /* GET posts index /posts */
-router.get('/', errorHandler(getPosts));
+router.get('/', asyncErrorHandler(postIndex));
 
 /* GET new post /posts/new */
-router.get('/new', newPost);
+router.get('/new', postNew);
 
 /* POST new post /posts */
-router.post('/', errorHandler(createPost));
+router.post('/', asyncErrorHandler(postCreate));
 
 /* GET SHOW page /posts/:id */
-router.get('/:id', errorHandler(showPost));
+router.get('/:id', asyncErrorHandler(postShow));
 
 /* GET edit post /posts/:id/edit */
-router.get('/:id/edit', (req, res, next) => {
-  res.send('this is to edit the /posts/:id content');
-});
+router.get('/:id/edit', asyncErrorHandler(postEdit));
 
 /* PUT update /posts/:id */
 router.put('/:id', (req, res, next) => {

@@ -1,15 +1,16 @@
 /*jshint esversion: 6 */
 
 // require packages
-const createError   = require('http-errors');
-const express       = require('express');
-const path          = require('path');
-const cookieParser  = require('cookie-parser');
-const logger        = require('morgan');
-const bodyParser    = require('body-parser');
-const passport      = require('passport');
-const session       = require('express-session');
-const mongoose      = require('mongoose');
+const createError     = require('http-errors');
+const express         = require('express');
+const path            = require('path');
+const cookieParser    = require('cookie-parser');
+const logger          = require('morgan');
+const bodyParser      = require('body-parser');
+const passport        = require('passport');
+const session         = require('express-session');
+const mongoose        = require('mongoose');
+const methodOverride  = require('method-override');
 
 // require user - passportLocalMongoose code
 const User = require('./models/user');
@@ -41,6 +42,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(methodOverride('_method'));
 
 // configure ExpressSessions - has to be before passport
 app.use(session({
