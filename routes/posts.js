@@ -1,21 +1,20 @@
 /*jshint esversion: 6 */
-const express           = require('express');
-const router            = express.Router();
-const { errorHandler }  = require('../middleware');
-const { getPosts }      = require('../controllers/posts');
+const express                     = require('express');
+const router                      = express.Router();
+const { errorHandler }            = require('../middleware');
+const { getPosts,
+        newPost,
+        createPost
+      } = require('../controllers/posts');
 
 /* GET posts index /posts */
 router.get('/', errorHandler(getPosts));
 
 /* GET new post /posts/new */
-router.get('/new', (req, res, next) => {
-  res.send('this is the /posts/new page');
-});
+router.get('/new', newPost);
 
 /* POST new post /posts */
-router.post('/', (req, res, next) => {
-  res.send('this is the POST /posts page');
-});
+router.post('/', errorHandler(createPost));
 
 /* GET SHOW page /posts/:id */
 router.get('/:id', (req, res, next) => {

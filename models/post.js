@@ -4,11 +4,23 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const PostSchema = new Schema({
-  body: String,
-  author: [
+  title: String,
+  price: String,
+  description: String,
+  images: [ String ],
+  location: String,
+  lat: Number,
+  lng: Number,
+  user: [
     {
       type: Schema.Types.ObjectId,
       ref: 'User'
+    }
+  ],
+  reviews: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Review'
     }
   ]
 });
