@@ -16,7 +16,7 @@ module.exports = {
   //Posts Create
   async postCreate(req, res, next){
     //use req.body
-    let post = await Post.create(req.body);
+    let post = await Post.create(req.body.post);
     res.redirect(`/posts/${post.id}`); // redirect to create post - note backticks and syntax
   },
 
@@ -30,6 +30,12 @@ module.exports = {
   async postEdit(req, res, next){
     let post = await Post.findById(req.params.id);
     res.render('posts/edit', { post });
+  },
+
+  // Post update
+  async postUpdate(req, res, next){
+    let post = await Post.findByIdAndUpdate(req.params.id, req.body.post);
+    res.redirect(`/posts/${post.id}`);
   }
 
 };
