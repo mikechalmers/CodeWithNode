@@ -3,7 +3,7 @@ const Post = require('../models/post');
 
 // Posts Index
 module.exports = {
-  async getPosts(req, res, next) {
+  async getPosts(req, res, next){
     let posts = await Post.find({});
     res.render('posts/index', { posts });
   },
@@ -19,7 +19,7 @@ module.exports = {
     let post = await Post.create(req.body);
     res.redirect(`/posts/${post.id}`); // redirect to create post - note backticks and syntax
   },
-  async postRegister(req, res, next) {
+  async postRegister(req, res, next){
       console.log('creating post');
     const newPost = new Post({
       username:   req.body.username,
@@ -31,5 +31,11 @@ module.exports = {
     console.log('user registered!');
     res.redirect('/');
   },
+
+  // Posts show
+  async showPost(req, res, next){
+    let post = await Post.findById(req.params.id);
+    res.render('posts/show', { post });
+  }
 
 };

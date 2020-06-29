@@ -4,7 +4,8 @@ const router                      = express.Router();
 const { errorHandler }            = require('../middleware');
 const { getPosts,
         newPost,
-        createPost
+        createPost,
+        showPost
       } = require('../controllers/posts');
 
 /* GET posts index /posts */
@@ -17,9 +18,7 @@ router.get('/new', newPost);
 router.post('/', errorHandler(createPost));
 
 /* GET SHOW page /posts/:id */
-router.get('/:id', (req, res, next) => {
-  res.send('this is the /posts/ SHOW page for IDs');
-});
+router.get('/:id', errorHandler(showPost));
 
 /* GET edit post /posts/:id/edit */
 router.get('/:id/edit', (req, res, next) => {
