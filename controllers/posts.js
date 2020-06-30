@@ -1,5 +1,12 @@
 /*jshint esversion: 8 */
 const Post = require('../models/post');
+const cloudinary = require('cloudinary');
+
+cloudinary.config({
+  cloud_name: 'mike-chalmers',
+  api_key: '691283465219522',
+  api_secret: process.env.CLOUDINARY_SECRET
+});
 
 // Posts Index
 module.exports = {
@@ -15,7 +22,16 @@ module.exports = {
 
   //Posts Create
   async postCreate(req, res, next){
-    //use req.body
+    // there's no req.body.post.images and we need this to add it to user's post so
+    // we can create it as an array, then push() the fields created by cloudinary in like so
+    req.body.post.images = [];
+    for(const file of req.files){
+      let image = await cloudinary.v2.uploader.upload(file.path);
+      req.body.post.images.push({
+        url: image.secure_url,
+        public_id: image.public_id
+      });
+    }
     let post = await Post.create(req.body.post);
     res.redirect(`/posts/${post.id}`); // redirect to create post - note backticks and syntax
   },

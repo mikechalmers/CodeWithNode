@@ -1,7 +1,9 @@
 /*jshint esversion: 6 */
 const express                     = require('express');
 const router                      = express.Router();
-const { asyncErrorHandler }            = require('../middleware');
+const multer                      = require('multer');
+const upload                      = multer({'dest': 'uploads/'});
+const { asyncErrorHandler }       = require('../middleware');
 const { postIndex,
         postNew,
         postCreate,
@@ -17,8 +19,8 @@ router.get('/', asyncErrorHandler(postIndex));
 /* GET new post /posts/new */
 router.get('/new', postNew);
 
-/* POST new post /posts */
-router.post('/', asyncErrorHandler(postCreate));
+/* POST new Create /posts */
+router.post('/', upload.array('images', 4), asyncErrorHandler(postCreate));
 
 /* GET SHOW page /posts/:id */
 router.get('/:id', asyncErrorHandler(postShow));

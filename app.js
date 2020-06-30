@@ -1,5 +1,7 @@
 /*jshint esversion: 6 */
 
+// require dotenv if using .env file for secrets
+require('dotenv').config();
 // require packages
 const createError     = require('http-errors');
 const express         = require('express');
