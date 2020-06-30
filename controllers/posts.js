@@ -50,6 +50,8 @@ module.exports = {
 
   // Post update
   async postUpdate(req, res, next){
+    // handle any deletion of existing images
+    // handle upload of new images
     let post = await Post.findByIdAndUpdate(req.params.id, req.body.post);
     res.redirect(`/posts/${post.id}`);
   },

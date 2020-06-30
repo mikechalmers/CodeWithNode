@@ -1,8 +1,18 @@
 <h1>Edit Post: </h1>
 
-<form action="/posts/<%= post.id %>?_method=PUT" method="POST">
+<form action="/posts/<%= post.id %>?_method=PUT" method="POST" id="postEditForm">
 	<div><input type="text" name="post[title]" placeholder="Title" value="<%= post.title %>"></div>
 	<div><input type="text" name="post[price]" placeholder="Price" value="<%= post.price %>"></div>
+	<div class="">
+		<input type="file" accept="image/*" id="imageUpload" name="images" multiple />
+		<div class="">
+			<% post.images.forEach(function(image, i){ %>
+				<img src="<%= image.url %>" width="75px">
+				<label for="image<%= i %>">Delete?</label>
+				<input type="checkbox" class="imageDeleteCheckbox" id="image<%= i %>" name="deleteImage" value="<%= image.public_id %>">
+			<% }) %>
+		</div>
+	</div>
 	<div>
 		<textarea name="post[description]" placeholder="Description"><%= post.description %></textarea>
 	</div>
@@ -10,3 +20,49 @@
 
 	<input type="submit">
 </form>
+
+<script>
+
+	// find the post edit form by its ID
+
+	let postEditForm = document.getElementById('postEditForm');
+
+	// add submit listener to the form
+
+	postEditForm.addEventListener('submit', function(event){
+
+		// find how many images user is attempting upload
+
+		let imageUploads = document.getElementById('imageUpload').files.length;
+
+		// find how many images post already has
+
+		let existingImages = document.querySelectorAll('.imageDeleteCheckbox').length;
+
+		// calculate total number deletions
+
+		let imgDeletions = document.querySelectorAll('.imageDeleteCheckbox:checked').length;
+
+		// calculate the total images after adds and removals
+
+		let newTotal = existingImages - imgDeletions + imageUploads;
+
+		// calculate if the form can be submitted (if images <5) or not (if images >=5)
+
+		if(newTotal  > 4){
+
+			// stop the form submit
+
+			event.preventDefault();
+
+			// calculate the amount of images over 4
+
+			 let overspill = newTotal - 4;
+
+
+			alert(`Max 4 images allowed so please remove${overspill !== 1 ? ' at least' : ''} ${overspill} image${overspill !== 1 ? 's' : ''} to do that.`)
+		}
+
+	});
+
+</script>
