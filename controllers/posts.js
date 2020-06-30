@@ -50,9 +50,85 @@ module.exports = {
 
   // Post update
   async postUpdate(req, res, next){
-    // handle any deletion of existing images
-    // handle upload of new images
-    let post = await Post.findByIdAndUpdate(req.params.id, req.body.post);
+
+    // get access to the post we want to edit by ID
+
+    let post = await Post.findById(req.params.id);
+
+    // check if there are any images for deletion by looking for the array of image checkboxes then seeing if any selected images exist with length, 0 = falsy
+
+    if(req.body.deleteImages && req.body.deleteImages.length) {
+
+      // make the images to delete a variable as we're going to be using it
+
+      let deleteImages = req.body.deleteImages;
+
+      // loop over the images - using async function so needs forof
+
+      for(const public_id of deleteImages) {
+
+        // delete image from Cloudinary
+
+        await cloudinary.v2.uploader.destroy(public_id);
+
+        // -- delete image from Mongo i.e post.images --
+
+        // loop over images attached to the post
+
+        for(const image of post.images) {
+
+          // if any images from the post have the same public_id as the one we're deleting
+
+          if(image.public_id === public_id) {
+
+            // get the index of the image
+
+            let index = post.images.indexOf(image);
+
+            // remove this image using splice and one
+
+            post.images.splice(index, 1);
+
+            // this will still need saved, but we do that later
+          }
+        }
+      }
+    }
+
+    // now check if there's any new images to upload
+
+    if(req.files) {
+
+      // loop over files added
+
+      for(const file of req.files){
+
+        // upload images
+
+        let image = await cloudinary.v2.uploader.upload(file.path);
+
+        // add images to Mongo - post.images array
+
+        post.images.push({
+          url: image.secure_url,
+          public_id: image.public_id
+        });
+      }
+    }
+
+    // update the post with the submitted properties regardless if changed or not
+
+    post.title = req.body.post.title;
+    post.description = req.body.post.description;
+    post.price = req.body.post.price;
+    post.location = req.body.post.location;
+
+    // and save
+
+    post.save();
+
+    // go back to Post show page
+
     res.redirect(`/posts/${post.id}`);
   },
 
@@ -61,5 +137,4 @@ module.exports = {
     await Post.findByIdAndDelete(req.params.id);
     res.redirect('/posts');
   }
-
 };
