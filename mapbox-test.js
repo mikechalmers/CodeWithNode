@@ -54,6 +54,7 @@ async function geocoder(location) {
 
       console.log(match.body.features[0].geometry.coordinates[0]);
       console.log(match.body.features[0].geometry.coordinates[1]);
+      //perfect catch
     } catch(err) {
       console.log(err.message);
     }
