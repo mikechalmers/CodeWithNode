@@ -35,16 +35,16 @@ async postCreate(req, res, next){
     });
   }
 
-  // this is copypasted from mapbox-test
+  // Take the location user sent and query Mapbox geocoding. This will respond with a heap of different properties
 
   let match = await geocodingClient
-  .forwardGeocode({
-    query: req.body.post.location,
-    limit: 1
-  })
-  .send();
+    .forwardGeocode({
+      query: req.body.post.location,
+      limit: 1
+    })
+    .send();
 
-  // this allows user to put in a location and we turn it into coordinates and they are saved to the database
+  // this takes the coordinates part from the above response and inserts it into coordinates in the database
 
   req.body.post.coordinates = match.body.features[0].geometry.coordinates;
 
@@ -77,6 +77,8 @@ async postUpdate(req, res, next){
   // get access to the post we want to edit by ID
 
   let post = await Post.findById(req.params.id);
+
+  // Update IMAGES
 
   // check if there are any images for deletion by looking for the array of image checkboxes then seeing if any selected images exist with length, 0 = falsy
 
@@ -139,12 +141,36 @@ async postUpdate(req, res, next){
     }
   }
 
+  // Update LOCATION / COORDINATES
+
+  // if the User submitted location is different to how it is in database
+
+  if(req.body.post.location !== post.location) {
+
+    // Same as create route: take the update location user sent and query Mapbox geocoding. This will respond with a heap of different properties
+
+    let match = await geocodingClient
+      .forwardGeocode({
+        query: req.body.post.location,
+        limit: 1
+      })
+      .send();
+
+    // take the coordinates from the response above and put it in the post that's about to be saved to database (below)
+
+    post.coordinates = match.body.features[0].geometry.coordinates;
+
+    // while we're at it, update location - if it's not modified it won't update within this loop
+
+    post.location = req.body.post.location;
+
+  }
+
   // update the post with the submitted properties regardless if changed or not
 
   post.title = req.body.post.title;
   post.description = req.body.post.description;
   post.price = req.body.post.price;
-  post.location = req.body.post.location;
 
   // and save
 
