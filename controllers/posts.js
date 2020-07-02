@@ -1,5 +1,7 @@
 /*jshint esversion: 8 */
 const Post = require('../models/post');
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const geocodingClient = mbxGeocoding({ accessToken: process.env.MAPBOX_TOKEN });
 const cloudinary = require('cloudinary');
 
 cloudinary.config({
@@ -32,7 +34,28 @@ async postCreate(req, res, next){
       public_id: image.public_id
     });
   }
+
+  // this is copypasted from mapbox-test
+
+  let match = await geocodingClient
+  .forwardGeocode({
+    query: req.body.post.location,
+    limit: 1
+  })
+  .send();
+
+  // this allows user to put in a location and we turn it into coordinates and they are saved to the database
+
+  req.body.post.coordinates = match.body.features[0].geometry.coordinates;
+
+  // post all the user inputted data into the database as a Post
+
   let post = await Post.create(req.body.post);
+
+  // find out what is in post (dev)
+
+  // console.log(post);
+
   res.redirect(`/posts/${post.id}`); // redirect to create post - note backticks and syntax
 },
 

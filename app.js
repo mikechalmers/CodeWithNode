@@ -6,6 +6,7 @@ require('dotenv').config();
 const createError     = require('http-errors');
 const express         = require('express');
 const path            = require('path');
+const favicon         = require('serve-favicon');
 const cookieParser    = require('cookie-parser');
 const logger          = require('morgan');
 const bodyParser      = require('body-parser');
@@ -39,11 +40,17 @@ db.once('open', () => {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+
 app.use(logger('dev'));
+// parse form data and make it available as req.body.[something]
 app.use(bodyParser.json());
+// The "extended" syntax allows for rich objects and arrays to be encoded into the URL-encoded format, allowing for a JSON-like experience with URL-encoded
 app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(cookieParser());
+// look in public for static files
 app.use(express.static(path.join(__dirname, 'public')));
+// override POST methods to PUT and DELETE using ?_method=PUT in the action
 app.use(methodOverride('_method'));
 
 // configure ExpressSessions - has to be before passport
@@ -64,6 +71,10 @@ passport.deserializeUser(User.deserializeUser());
 app.use('/', indexRouter);
 app.use('/posts', postsRouter);
 app.use('/posts/:id/reviews', reviewsRouter);
+
+// favicon
+app.use(favicon(path.join(__dirname,'public','images','favicon.ico')));
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
