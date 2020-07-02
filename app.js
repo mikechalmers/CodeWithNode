@@ -23,7 +23,15 @@ const indexRouter     = require('./routes/index');
 const postsRouter     = require('./routes/posts');
 const reviewsRouter   = require('./routes/reviews');
 
+// use ejs for templates, make express the app variable
+const engine = require('ejs-mate');
 const app = express();
+// use ejs-locals for all ejs templates:
+app.engine('ejs', engine);
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
 // mongoose setup
 var url = process.env.DATABASEURL || "mongodb://localhost/codeWithNode";
@@ -34,12 +42,6 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
   console.log('mongo connected');
 });
-
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
 
 app.use(logger('dev'));
 // parse form data and make it available as req.body.[something]
