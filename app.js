@@ -69,6 +69,15 @@ passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser()); // first part comes from passport, second part (passed in) comes from passportLocalMongoose
 passport.deserializeUser(User.deserializeUser());
 
+// title middleware
+app.use(function(req, res, next) {
+  // res.locals.title is the same as passing the title in via the res.render second argument, in an object in the controller files
+  // this is middleware and will work application-wide - unless overwritten in the res.render, which would change the value
+  // so this is essentially a fall-back for using an ejs title, so it can't give an error
+  res.locals.title = 'Surf Shop';
+  next();
+});
+
 // mount routes
 app.use('/', indexRouter);
 app.use('/posts', postsRouter);
