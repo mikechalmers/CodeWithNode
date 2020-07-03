@@ -52,6 +52,10 @@ async postCreate(req, res, next){
 
   let post = await Post.create(req.body.post);
 
+  // flash messages
+
+  req.session.success = 'Post created successfully';
+
   // find out what is in post (dev)
 
   // console.log(post);
@@ -61,6 +65,9 @@ async postCreate(req, res, next){
 
 // Posts show
 async postShow(req, res, next){
+  // next line has an error test to check flash messages
+  // throw new Error('This is a glasses error');
+
   let post = await Post.findById(req.params.id);
   res.render('posts/show', { post });
 },

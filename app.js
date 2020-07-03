@@ -69,12 +69,29 @@ passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser()); // first part comes from passport, second part (passed in) comes from passportLocalMongoose
 passport.deserializeUser(User.deserializeUser());
 
+// custom pre-route middleware
+
 // title middleware
 app.use(function(req, res, next) {
   // res.locals.title is the same as passing the title in via the res.render second argument, in an object in the controller files
   // this is middleware and will work application-wide - unless overwritten in the res.render, which would change the value
   // so this is essentially a fall-back for using an ejs title, so it can't give an error
   res.locals.title = 'Surf Shop';
+  next();
+});
+
+// local variables middleware
+// this could be built into the above but initially am separating concerns
+app.use(function(req, res, next) {
+  // make the session success notice available locally for flash message, or if none set to empty string
+  res.locals.success = req.session.success || '';
+  // dealt with it so get rid of it
+  delete req.session.success;
+  // make the session error notice available locally for flash message, or if none set to empty string
+  res.locals.error = req.session.error || '';
+  // dealt with it so get rid of it
+  delete req.session.error;
+  // continue on to next function in middleware chain
   next();
 });
 
@@ -94,13 +111,16 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  // // set locals, only providing error in development
+  // res.locals.message = err.message;
+  // res.locals.error = req.app.get('env') === 'development' ? err : {};
+  //
+  // // render the error page
+  // res.status(err.status || 500);
+  // res.render('error');
+  console.log(err);
+  req.session.error = err.message;
+  res.redirect('back');
 });
 
 module.exports = app;
