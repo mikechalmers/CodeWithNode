@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <!-- mapbox code -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="/stylesheets/post-show.css">
+    <!-- / mapbox code -->
+  </head>
+  <body>
+    <%- body -%>
+    <!-- mapbox code -->
+    <script>
+    // make a LOCAL variable from a SERVER-SIDE object - JSON.stringify turns an object (i.e. the Post Object in this case) into a string so it can be used in client-side JS
+    // this needs to be here to take the post data from the ejs - the rest can be in a separate js file
+    var post = <%- JSON.stringify(post) %>;
+    </script>
+    <script src="/javascripts/post-show.js"></script>
+    <!-- / mapbox code -->
+  </body>
+</html>
