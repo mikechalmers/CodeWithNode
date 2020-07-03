@@ -26,3 +26,21 @@
 <div class="">
   <a href="/posts">Back to Index</a>
 </div>
+
+<!-- reviews -->
+
+<h2>Create a Review</h2>
+<form action="/posts/<%= post.id %>/reviews/<%= post.review_id %>" method="POST">
+  <textarea name="review[body]" required></textarea>
+  <input type="number" min="1" max="5" step="1" name="review[rating]" required>
+  <input type="submit">
+</form>
+
+<h3>Reviews</h3>
+<!-- display all reviews -->
+<% post.reviews.forEach(function(review) { %>
+  <div class="">
+    <%= review.body %>
+    Rating: <%= review.rating %>
+  </div>
+<% }); %>

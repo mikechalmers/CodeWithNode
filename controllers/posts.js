@@ -68,7 +68,12 @@ async postShow(req, res, next){
   // next line has an error test to check flash messages
   // throw new Error('This is a glasses error');
 
-  let post = await Post.findById(req.params.id);
+  //add .populate to bring in reviews
+  let post = await Post.findById(req.params.id).populate({
+    // you can just have 'reviews' with no object but we've put it into an object with sort so we can show reverse order
+    path: 'reviews',
+    options: { sort: { '_id': -1 } }
+  });
   res.render('posts/show', { post });
 },
 
