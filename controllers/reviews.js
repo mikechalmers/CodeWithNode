@@ -10,7 +10,7 @@ module.exports = {
     let post = await Post.findById(req.params.id);
     // create the review
     // attach the author - add later
-    // req.body.review.author = req.user._id;
+    req.body.review.author = req.user._id;
     let review = await Review.create(req.body.review);
     // assign review to post
     post.reviews.push(review);

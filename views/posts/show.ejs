@@ -40,7 +40,9 @@
 <!-- display all reviews -->
 <% post.reviews.forEach(function(review) { %>
   <div class="">
-    <%= review.body %>
-    Rating: <%= review.rating %>
+    <%= review.body %><br />
+    Rating: <%= review.rating %><br />
+    By: <%= review.author.username %>
+    <hr />
   </div>
 <% }); %>

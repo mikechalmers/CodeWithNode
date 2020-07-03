@@ -80,6 +80,18 @@ app.use(function(req, res, next) {
   next();
 });
 
+// development only force logged-in user
+// this could be built into the above but initially am separating concerns
+app.use(function(req, res, next) {
+  req.user = {
+	'_id' : '5eff6793e7f26811e848ceb1',
+	'username' : 'mike'
+  };
+  res.locals.currentUser = req.user;
+  // continue on to next function in middleware chain
+  next();
+});
+
 // local variables middleware
 // this could be built into the above but initially am separating concerns
 app.use(function(req, res, next) {

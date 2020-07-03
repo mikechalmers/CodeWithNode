@@ -72,8 +72,13 @@ async postShow(req, res, next){
   let post = await Post.findById(req.params.id).populate({
     // you can just have 'reviews' with no object but we've put it into an object with sort so we can show reverse order
     path: 'reviews',
-    options: { sort: { '_id': -1 } }
+    options: { sort: { '_id': -1 } },
+    populate: {
+      path: 'author',
+      model: 'User'
+    }
   });
+  console.log(post);
   res.render('posts/show', { post });
 },
 
