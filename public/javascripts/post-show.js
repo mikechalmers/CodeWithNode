@@ -1,4 +1,5 @@
 /*jshint esversion: 8 */
+/*jshint -W030*/
 
 // Initialise Map
 mapboxgl.accessToken = 'pk.eyJ1IjoibWlrZWNoYWxtZXJzIiwiYSI6ImNrYzI5dTNoZTIxanMyd214cHJpZmZpdW4ifQ.e3vhqufW1d5uUry3RG8lYg';

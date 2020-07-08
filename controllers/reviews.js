@@ -53,7 +53,14 @@ module.exports = {
 
   // Reviews destroy
   async reviewDestroy(req, res, next){
-
+    // first we need to remove the review from the post
+    await Post.findByIdAndUpdate(req.params.id, {
+      // $pull is a mongo function that removes only the specified values from the entry (in this case the review from the post)
+      $pull: { reviews: req.params.review_id}
+    });
+    await Review.findByIdAndRemove(req.params.review_id);
+    req.session.success = 'Review deleted successfully';
+    res.redirect(`/posts/${req.params.id}`);
   }
 
 // end modules export
