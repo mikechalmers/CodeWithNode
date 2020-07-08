@@ -1,7 +1,8 @@
-/*jshint esversion: 6 */
+/*jshint esversion: 8 */
 
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Review = require('./review');
 
 const PostSchema = new Schema({
   title: String,
@@ -25,6 +26,17 @@ const PostSchema = new Schema({
       ref: 'Review'
     }
   ]
+});
+
+// middleware added so any time .remove() (ie post.remove() in Posts Destroy controller), this removes matching reviews
+// need to use a function - not arrow function - here, as we're using 'this' (which points to the post that called it here)
+// $in is another mongo operator - selects docs whose field hold an arrary that matches
+PostSchema.pre('remove', async function() {
+  await Review.remove({
+    _id: {
+      $in: this.reviews
+    }
+  });
 });
 
 module.exports = mongoose.model('Post', PostSchema);

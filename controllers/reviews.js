@@ -7,7 +7,18 @@ module.exports = {
   //Reviews Create
   async reviewCreate(req, res, next){
     // find the post by its ID
-    let post = await Post.findById(req.params.id);
+    // added .populate to turn the review objects into review content so we can restrict reviews to 1 per user
+    // exec() executes the populate
+    let post = await Post.findById(req.params.id).populate('reviews').exec();
+    // filter is a method that allows us to filter all reviews for something (in this case if author matches a review author)
+    let haveReviewed = post.reviews.filter(review => {
+      return review.author.equals(req.user._id);
+    // using length so if there is a review it will = 1, else = 0
+    }).length;
+    if(haveReviewed) {
+      req.session.error = 'Sorry, you can only create one review per post.';
+      return res.redirect(`/posts/${post.id}`);
+    }
     // create the review
     // attach the author - add later
     req.body.review.author = req.user._id;
