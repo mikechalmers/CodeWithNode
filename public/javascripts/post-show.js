@@ -42,11 +42,12 @@ new mapboxgl.Marker(el)
 
 
 // toggle edit review form - my own ES6 js
-  const button = document.querySelector('.toggle-edit-form');
-  const form = document.querySelector('.edit-review-form');
-  button.onclick = function() {
-    // toggle the edit button text on click
-    button.innerHTML === 'Edit' ? button.innerHTML = 'Cancel' : button.innerHTML = 'Edit';
-    // toggle visibility of edit review form
-    button.nextElementSibling.classList.toggle('toggle');
+  button = document.querySelectorAll('.toggle-edit-form');
+  for (i = 0; i < button.length; i++) {
+    button[i].onclick = function() {
+      // toggle the edit button text on click
+      this.innerHTML === 'Edit' ? this.innerHTML = 'Cancel' : this.innerHTML = 'Edit';
+      // toggle visibility of edit review form
+      this.nextElementSibling.classList.toggle('toggle');
   };
+  }
