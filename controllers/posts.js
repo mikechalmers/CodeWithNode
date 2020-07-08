@@ -78,7 +78,7 @@ async postShow(req, res, next){
       model: 'User'
     }
   });
-  console.log(post);
+  // console.log(post);
   res.render('posts/show', { post });
 },
 
