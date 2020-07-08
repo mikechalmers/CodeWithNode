@@ -44,6 +44,9 @@
     Rating: <%= review.rating %><br />
     By: <%= review.author.username %>
   </div>
+
+  <!-- simple if to only show edit to logged-in users -->
+  <% if(review.author.equals(currentUser._id)) { %>
   <div class="">
     <button class="toggle-edit-form">Edit</button>
     <form class="edit-review-form" action="/posts/<%= post.id %>/reviews/<%= review.id %>?_method=PUT" method="POST">
@@ -52,5 +55,7 @@
       <input type="submit" value="Update">
     </form>
   </div>
+  <% } %>
+
       <hr />
 <% }); %>
