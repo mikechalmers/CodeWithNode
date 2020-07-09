@@ -3,6 +3,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Review = require('./review');
+const mongoosePaginate = require('mongoose-paginate');
 
 const PostSchema = new Schema({
   title: String,
@@ -38,5 +39,8 @@ PostSchema.pre('remove', async function() {
     }
   });
 });
+
+// add pagination insude of posts
+PostSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Post', PostSchema);
