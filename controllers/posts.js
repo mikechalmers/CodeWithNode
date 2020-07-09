@@ -84,8 +84,9 @@ async postShow(req, res, next){
       model: 'User'
     }
   });
+  const floorRating = post.calculateAvgRating();
   // console.log(post);
-  res.render('posts/show', { post });
+  res.render('posts/show', { post, floorRating });
 },
 
 // Posts edit

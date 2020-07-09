@@ -14,7 +14,7 @@ const passport        = require('passport');
 const session         = require('express-session');
 const mongoose        = require('mongoose');
 const methodOverride  = require('method-override');
-const seedPosts       = require('./seeds');
+// const seedPosts       = require('./seeds');
 
 // seedPosts();
 
@@ -85,10 +85,19 @@ app.use(function(req, res, next) {
 
 // development only force logged-in user
 // this could be built into the above but initially am separating concerns
+// three users to test functionality i.e. average review amount
 app.use(function(req, res, next) {
+  // req.user = {
+	// '_id' : '5eff6793e7f26811e848ceb1',
+	// 'username' : 'mike'
+  // };
+  // req.user = {
+	// '_id' : '5f05d2098d6fafe1feb2ec3f',
+	// 'username' : 'becky'
+  // };
   req.user = {
-	'_id' : '5eff6793e7f26811e848ceb1',
-	'username' : 'mike'
+	'_id' : '5f0728e7bfd57c826d6ce458',
+	'username' : 'mac'
   };
   res.locals.currentUser = req.user;
   // continue on to next function in middleware chain

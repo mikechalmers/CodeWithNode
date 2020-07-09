@@ -26,7 +26,11 @@ const PostSchema = new Schema({
       type: Schema.Types.ObjectId,
       ref: 'Review'
     }
-  ]
+  ],
+  avgRating: {
+    type: Number,
+    default: 0
+  }
 });
 
 // middleware added so any time .remove() (ie post.remove() in Posts Destroy controller), this removes matching reviews
@@ -39,6 +43,28 @@ PostSchema.pre('remove', async function() {
     }
   });
 });
+
+// PostSchema = any document that is a post can call the calculateAvgRating method and will run this function
+// need to use a function for 'this' to work
+PostSchema.methods.calculateAvgRating = function() {
+  let ratingsTotal = 0;
+  // only run if there are reviews
+  if(this.reviews.length) {
+    // this refers to the post it will be rating
+    // iterate over all reviews
+    this.reviews.forEach(review => {
+      ratingsTotal += review.rating;
+    });
+    // post.avgRating from the schema
+    this.avgRating = Math.round((ratingsTotal / this.reviews.length) * 10) / 10;
+    const floorRating = Math.floor(this.avgRating);
+    this.save();
+    return floorRating;
+  } else {
+    this.avgRating = ratingsTotal;
+  }
+  };
+
 
 // add pagination insude of posts
 PostSchema.plugin(mongoosePaginate);

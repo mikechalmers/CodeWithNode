@@ -4,6 +4,25 @@
 <div><%= post.price %></div>
 <div><%= post.description %></div>
 <div><%= post.location %></div>
+<div>Avg Rating: <%= post.avgRating %></div>
+<!-- turn avgRating into stars -->
+<div>
+  <% for(let i = 0; i < 5; i++) { %>
+    <% if(i < floorRating) { %>
+      <!-- display full star -->
+      <i class="fas fa-star"></i>
+    <!-- you can change the 0 below to 0.5 so if there's a number between .5 and 1 a half star show - or any variation of numbers --
+    <% } else if((post.avgRating - i) > 0 && (post.avgRating - i) < 1) { %>
+      <!-- display half star -->
+      <i class="fas fa-star-half-alt"></i>
+    <% } else { %>
+      <!-- display empty star -->
+      <i class="far fa-star"></i>
+    <% } %>
+  <% } %>
+
+  <%= `${post.avgRating} star${post.avgRating === 1 ? '' : 's'}` %>
+</div>
 
 <% post.images.forEach(function(image){ %>
   <div class="">
