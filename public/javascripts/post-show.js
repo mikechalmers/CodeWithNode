@@ -4,6 +4,10 @@
 // Initialise Map
 mapboxgl.accessToken = 'pk.eyJ1IjoibWlrZWNoYWxtZXJzIiwiYSI6ImNrYzI5dTNoZTIxanMyd214cHJpZmZpdW4ifQ.e3vhqufW1d5uUry3RG8lYg';
 
+// I've wrapped it in and if statement so code doesn't run when no location exists
+// it would probably have been simpler to use post.location but good learning experience
+// although I guess this is stronger - for instance if location entered but no matches means no coordinates
+
 if (Array.isArray(post.coordinates) && post.coordinates.length) {
 
   var map = new mapboxgl.Map({
@@ -52,12 +56,22 @@ if (Array.isArray(post.coordinates) && post.coordinates.length) {
 
 // toggle edit review form - my own ES6 js
 
-  button = document.querySelectorAll('.toggle-edit-form');
-  for (i = 0; i < button.length; i++) {
-    button[i].onclick = function() {
-      // toggle the edit button text on click
-      this.innerHTML === 'Edit' ? this.innerHTML = 'Cancel' : this.innerHTML = 'Edit';
-      // toggle visibility of edit review form
-      this.nextElementSibling.classList.toggle('toggle');
+button = document.querySelectorAll('.toggle-edit-form');
+for (i = 0; i < button.length; i++) {
+  button[i].onclick = function() {
+    // toggle the edit button text on click
+    this.innerHTML === 'Edit' ? this.innerHTML = 'Cancel' : this.innerHTML = 'Edit';
+    // toggle visibility of edit review form
+    this.nextElementSibling.classList.toggle('toggle');
+};
+}
+
+  // click listener for star ratings
+  // I think it needs a for loop as there may an edit review as well as create review
+
+stars = document.querySelectorAll('.clear-rating');
+for (i = 0; i < stars.length; i++) {
+ stars[i].onclick = function() {
+  this.nextElementSibling.click();
   };
-  }
+}
