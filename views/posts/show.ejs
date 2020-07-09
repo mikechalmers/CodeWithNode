@@ -11,8 +11,9 @@
   </div>
 <% });%>
 
+<% if (Array.isArray(post.coordinates) && post.coordinates.length) { %>
 <div id='map'></div> <!-- mapbox map -->
-
+<% } %>
 <div class="">
   <a href="/posts/<%= post.id %>/edit">
     <button>Edit</button>
