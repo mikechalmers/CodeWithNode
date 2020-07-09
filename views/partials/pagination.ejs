@@ -1,0 +1,23 @@
+<div class="" style="margin: 20px 0;">
+  <p>Current page (post.page): <strong><%= posts.page %></strong></p>
+  <p>Total pages (post.pages): <strong><%= posts.pages %></strong></p>
+  <p>Previous Page (post.page - 1): <strong><%= posts.page - 1 %></strong></p>
+
+  <!-- previous link -->
+  <% if(posts.page - 1) { %>
+    <a href="/posts?page=<%= posts.page - 1 %>">Prev</a>
+  <% } %>
+
+  <!-- numbered links -->
+  <% for(let i = 1; i <= posts.pages; i++) { %>
+    <a href="/posts?page=<%= i %>"
+       <%= i === posts.page ? 'style=color:#000;font-weight:bold;' : ''; %>
+      ><%= i %></a>
+  <% } %>
+
+  <!-- next link -->
+  <% if((posts.page + 1 <= posts.pages)) { %>
+    <a href="/posts?page=<%= posts.page + 1 %>">Next</a>
+  <% } %>
+
+</div>

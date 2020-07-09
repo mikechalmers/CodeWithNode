@@ -19,6 +19,7 @@ module.exports = {
       page: req.query.page || 1,
       limit: 10
     });
+    posts.page = Number(posts.page);
     res.render('posts/index', { posts, title: 'Posts Index' });
   },
 
