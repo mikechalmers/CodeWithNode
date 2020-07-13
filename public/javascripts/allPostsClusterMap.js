@@ -1,14 +1,21 @@
+// initiate map
 var map = new mapboxgl.Map({
+    // on div with ID map
     container: 'map',
+    // Mapbox has different styling options (see show page styling)
     style: 'mapbox://styles/mapbox/light-v9',
+    // the longitude and latitude for center of USA
     center: [-98.55562, 39.809734],
+    // map starting zoom
     zoom: 3.3
 });
 
+// add a search function for the
 map.addControl(new MapboxGeocoder({
     accessToken: mapboxgl.accessToken
 }));
 
+// when the map loads (onLoad) execute the function
 map.on('load', function() {
     // Add a new source from our GeoJSON data and set the
     // 'cluster' option to true. GL-JS will add the point_count property to your source data.
@@ -19,7 +26,7 @@ map.on('load', function() {
         clusterMaxZoom: 14, // Max zoom to cluster points on
         clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
     });
-
+    // add a clusters layer, using source above for the coloured circles
     map.addLayer({
         id: "clusters",
         type: "circle",
@@ -52,6 +59,7 @@ map.on('load', function() {
         }
     });
 
+    // add a clusters layer, using source above for the numbers on top of the circles
     map.addLayer({
         id: "cluster-count",
         type: "symbol",
@@ -64,6 +72,7 @@ map.on('load', function() {
         }
     });
 
+    // add a clusters layer, using source above for the posts with no (!) point count i.e. singular locations
     map.addLayer({
         id: "unclustered-point",
         type: "circle",
@@ -77,6 +86,7 @@ map.on('load', function() {
         }
     });
 
+    // what happens when you click on a singular point - create a popup
     map.on('click', 'unclustered-point', function(e) {
       var coordinates = e.features[0].geometry.coordinates.slice();
       var description = e.features[0].properties.description;

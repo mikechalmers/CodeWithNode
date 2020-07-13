@@ -3,13 +3,7 @@ const Post = require('../models/post');
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const mapBoxToken = process.env.MAPBOX_TOKEN;
 const geocodingClient = mbxGeocoding({ accessToken: mapBoxToken });
-const cloudinary = require('cloudinary');
-
-cloudinary.config({
-  cloud_name: 'mike-chalmers',
-  api_key: '691283465219522',
-  api_secret: process.env.CLOUDINARY_SECRET
-});
+const { cloudinary } = require('../cloudinary');
 
 // Posts Index
 module.exports = {
@@ -18,6 +12,10 @@ module.exports = {
     let posts = await Post.paginate({}, {
       // what page was queried - otherwise page 1
       page: req.query.page || 1,
+      // sort like mongoose, object and string
+      // sort: {'_id': '-1'},
+      // shortened:
+      sort: '-_id',
       limit: 10
     });
     posts.page = Number(posts.page);
@@ -34,13 +32,18 @@ async postCreate(req, res, next){
   // there's no req.body.post.images and we need this to add it to user's post so
   // we can create it as an array, then push() the fields created by cloudinary in like so
   req.body.post.images = [];
-  for(const file of req.files){
-    let image = await cloudinary.v2.uploader.upload(file.path);
-    req.body.post.images.push({
-      url: image.secure_url,
-      public_id: image.public_id
-    });
-  }
+  // for(const file of req.files){
+  //   let image = await cloudinary.v2.uploader.upload(file.path);
+  //   req.body.post.images.push({
+  //     url: image.secure_url,
+  //     public_id: image.public_id
+  //   });
+  for(const file of req.files) {
+  	req.body.post.images.push({
+  		url: file.secure_url,
+  		public_id: file.public_id
+  	 });
+   }
 
   // Take the location user sent and query Mapbox geocoding. This will respond with a heap of different properties
 
@@ -51,13 +54,19 @@ async postCreate(req, res, next){
     })
     .send();
 
-  // this takes the coordinates part from the above response and inserts it into coordinates in the database
+  // this takes the coordinates part from the above response from the geocodingClient and inserts it into coordinates in the database
+  // req.body.post.coordinates = match.body.features[0].geometry.coordinates;
+  // instead we will take more than just coordinates for new Geometry object in Post schema
+  req.body.post.geometry = match.body.features[0].geometry;
 
-  req.body.post.coordinates = match.body.features[0].geometry.coordinates;
 
   // post all the user inputted data into the database as a Post
+  // let post = await Post.create(req.body.post);
+  // changed to this to now add descriptions for maps
 
-  let post = await Post.create(req.body.post);
+  let post = new Post(req.body.post);
+  post.properties.description = `<strong><a href="/posts/${post._id}">${post.title}</a></strong><p>${post.location}</p><p>${post.description.substring(0, 20)}...</p>`;
+  await post.save();
 
   // flash messages
 
@@ -150,19 +159,26 @@ async postUpdate(req, res, next){
   if(req.files) {
 
     // loop over files added
+    //
+    // for(const file of req.files){
+    //
+    //   // upload images
+    //
+    //   let image = await cloudinary.v2.uploader.upload(file.path);
+    //
+    //   // add images to Mongo - post.images array
+    //
+    //   post.images.push({
+    //     url: image.secure_url,
+    //     public_id: image.public_id
+    //   });
+    // }
 
-    for(const file of req.files){
-
-      // upload images
-
-      let image = await cloudinary.v2.uploader.upload(file.path);
-
-      // add images to Mongo - post.images array
-
-      post.images.push({
-        url: image.secure_url,
-        public_id: image.public_id
-      });
+    for(const file of req.files) {
+    	post.images.push({
+    		url: file.secure_url,
+    		public_id: file.public_id
+    	});
     }
   }
 
@@ -183,7 +199,7 @@ async postUpdate(req, res, next){
 
     // take the coordinates from the response above and put it in the post that's about to be saved to database (below)
 
-    post.coordinates = match.body.features[0].geometry.coordinates;
+    post.geometry = match.body.features[0].geometry;
 
     // while we're at it, update location - if it's not modified it won't update within this loop
 
@@ -196,6 +212,7 @@ async postUpdate(req, res, next){
   post.title = req.body.post.title;
   post.description = req.body.post.description;
   post.price = req.body.post.price;
+  post.properties.description = `<strong><a href="/posts/${post._id}">${post.title}</a></strong><p>${post.location}</p><p>${post.description.substring(0, 20)}...</p>`;
 
   // and save
 

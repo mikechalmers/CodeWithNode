@@ -8,6 +8,7 @@
   "dependencies": {
     "@mapbox/mapbox-sdk": "^0.11.0",
     "body-parser": "^1.19.0",
+    "cloudinary": "^1.13.2",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "ejs": "~2.6.1",
@@ -19,6 +20,7 @@
     "mongoose": "^5.9.20",
     "mongoose-paginate": "^5.0.3",
     "morgan": "~1.9.1",
+    "multer-storage-cloudinary": "^2.2.1",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^6.0.1",
