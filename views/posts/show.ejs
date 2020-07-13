@@ -31,7 +31,7 @@
 <% });%>
 
 <%# I created this if statement to remove maps as empty maps conflict with review editing - and I'm not sure why %>
-<% if (Array.isArray(post.coordinates) && post.coordinates.length) { %>
+<% if (Array.isArray(post.geometry.coordinates) && post.geometry.coordinates.length) { %>
 <div id='map'></div> <!-- mapbox map -->
 <% } %>
 <div class="">

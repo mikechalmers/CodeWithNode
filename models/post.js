@@ -14,7 +14,20 @@ const PostSchema = new Schema({
     public_id: String
   } ],
   location: String,
-  coordinates: Array,
+  geometry: {
+    type: {
+      type: String,
+      enum: ['Point'],
+      required: true
+    },
+    coordinates: {
+      type: [Number],
+      required: true
+    }
+  },
+  properties: {
+    description: String
+  },
   user: [
     {
       type: Schema.Types.ObjectId,

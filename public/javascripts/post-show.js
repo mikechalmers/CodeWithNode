@@ -8,12 +8,12 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWlrZWNoYWxtZXJzIiwiYSI6ImNrYzI5dTNoZTIxanMyd
 // it would probably have been simpler to use post.location but good learning experience
 // although I guess this is stronger - for instance if location entered but no matches means no coordinates
 
-if (Array.isArray(post.coordinates) && post.coordinates.length) {
+if (Array.isArray(post.geometry.coordinates) && post.geometry.coordinates.length) {
 
   var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mikechalmers/ckc4vs39n13g61iqgatv4ryoa',
-    center: post.coordinates,
+    center: post.geometry.coordinates,
     zoom: 10
   });
 
@@ -43,7 +43,7 @@ if (Array.isArray(post.coordinates) && post.coordinates.length) {
 
   // make a marker and add to the map
   new mapboxgl.Marker(el)
-    .setLngLat(post.coordinates)
+    .setLngLat(post.geometry.coordinates)
     .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups - pixels above marker center
     .setHTML('<h3>' + post.title + '</h3><p>' + post.location + '</p>'))
     .addTo(map);
