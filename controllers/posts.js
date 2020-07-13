@@ -1,7 +1,8 @@
 /*jshint esversion: 8 */
 const Post = require('../models/post');
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
-const geocodingClient = mbxGeocoding({ accessToken: process.env.MAPBOX_TOKEN });
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+const geocodingClient = mbxGeocoding({ accessToken: mapBoxToken });
 const cloudinary = require('cloudinary');
 
 cloudinary.config({
@@ -20,7 +21,7 @@ module.exports = {
       limit: 10
     });
     posts.page = Number(posts.page);
-    res.render('posts/index', { posts, title: 'Posts Index', mapBoxToken: process.env.MAPBOX_TOKEN, });
+    res.render('posts/index', { posts, title: 'Posts Index', mapBoxToken });
   },
 
   // Posts New
@@ -86,7 +87,7 @@ async postShow(req, res, next){
   });
   const floorRating = post.calculateAvgRating();
   // console.log(post);
-  res.render('posts/show', { post, floorRating });
+  res.render('posts/show', { post, mapBoxToken, floorRating });
 },
 
 // Posts edit

@@ -2,7 +2,8 @@
 /*jshint -W030*/
 
 // Initialise Map
-mapboxgl.accessToken = 'pk.eyJ1IjoibWlrZWNoYWxtZXJzIiwiYSI6ImNrYzI5dTNoZTIxanMyd214cHJpZmZpdW4ifQ.e3vhqufW1d5uUry3RG8lYg';
+// the MapBox token is now passed in via EJS in the Post Shot Layout (post-show-layout.ejs) using dotenv for security
+
 
 // I've wrapped it in and if statement so code doesn't run when no location exists
 // it would probably have been simpler to use post.location but good learning experience
