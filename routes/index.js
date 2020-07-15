@@ -1,24 +1,27 @@
 /*jshint esversion: 6 */
 const express = require('express');
 const router = express.Router();
-const { landingPage, postRegister, postLogin, getLogout } = require('../controllers');
-const { asyncErrorHandler } = require('../middleware');
+const {
+  landingPage,
+  getRegister,
+  postRegister,
+  getLogin,
+  postLogin,
+  getLogout
+} = require('../controllers');
+const { asyncErrorHandler, checkIfUserExists } = require('../middleware');
 
 /* GET home/landing page. */
 router.get('/', asyncErrorHandler(landingPage));
 
 /* GET /register user. */
-router.get('/register', (req, res, next) => {
-  res.send("this be the register user form");
-});
+router.get('/register', getRegister);
 
 /* POST /register user. */
-router.post('/register', asyncErrorHandler(postRegister));
+router.post('/register', asyncErrorHandler(checkIfUserExists), asyncErrorHandler(postRegister));
 
 /* GET /login user. */
-router.get('/login', (req, res, next) => {
-  res.send("this be the register GET login form");
-});
+router.get('/login', getLogin);
 
 /* POST /login user. */
 router.post('/login', postLogin);

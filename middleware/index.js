@@ -1,6 +1,7 @@
 /*jshint esversion: 8 */
 
 const Review = require('../models/review');
+const User = require('../models/user');
 
 module.exports = {
 
@@ -21,6 +22,17 @@ module.exports = {
     // error and redirect
     req.session.error = 'You\'re not allowed to edit comments by other users.';
     return res.redirect('/');
+  },
+
+  checkIfUserExists: async (req, res, next) => {
+    // check submitted email against the database
+    let userExists = await User.findOne({'email': req.body.email});
+    // will be null unless a match so
+    if (userExists) {
+      req.session.error = 'A user with the given email is already registered';
+      return res.redirect('back');
+    }
+    next();
   }
 
 };

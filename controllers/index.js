@@ -6,12 +6,18 @@ const passport      = require('passport');
 const mapBoxToken = process.env.MAPBOX_TOKEN;
 
 module.exports = {
-  // GET /
+// GET /
   async landingPage(req, res, next) {
     const posts = await Post.find({});
     res.render('index', { posts, mapBoxToken, title: 'App Home' });
   },
-  // register user - POST /register
+
+// GET /register
+  getRegister(req, res, next) {
+    res.render('register', { title: 'Register '});
+  },
+
+// register user - POST /register
   async postRegister(req, res, next) {
     console.log('registering user');
   const newUser = new User({
@@ -19,13 +25,23 @@ module.exports = {
     email:      req.body.email,
     image:      req.body.image
   });
-  await User.register(newUser, req.body.password);
-
+  // this allows us to have access to the user, so we can log them in right away afer registry
+  let user = await User.register(newUser, req.body.password);
   console.log('user registered!');
-  res.redirect('/');
+  req.login(user, function(err) {
+    if (err) return next(err);
+    req.session.success = `Welcome to Surf Shop, ${user.username}!`;
+    res.redirect('/');
+  });
+
 },
 
-  // login user - POST /login
+// GET /login
+getLogin(req, res, next) {
+  res.render('login', { title: 'Login' });
+},
+
+// login user - POST /login
   postLogin(req, res, next) {
     passport.authenticate('local', {
       successRedirect: '/',
@@ -33,7 +49,7 @@ module.exports = {
     })(req, res, next);
   },
 
-  // logout user - GET /logout
+// logout user - GET /logout
   getLogout(req, res, next) {
     req.logout();
     res.redirect('/');
