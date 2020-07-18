@@ -14,26 +14,34 @@ module.exports = {
 
 // GET /register
   getRegister(req, res, next) {
-    res.render('register', { title: 'Register '});
+    // pass in username and email so user inputted values of these will = value on redirect in case of error
+    res.render('register', { title: 'Register ', username: '', email: '' });
   },
 
 // register user - POST /register
   async postRegister(req, res, next) {
     console.log('registering user');
-  const newUser = new User({
-    username:   req.body.username,
-    email:      req.body.email,
-    image:      req.body.image
-  });
-  // this allows us to have access to the user, so we can log them in right away afer registry
-  let user = await User.register(newUser, req.body.password);
-  console.log('user registered!');
-  req.login(user, function(err) {
-    if (err) return next(err);
-    req.session.success = `Welcome to Surf Shop, ${user.username}!`;
-    res.redirect('/');
-  });
-
+    // catch any errors early for custom error handling
+    try {
+      // this allows us to have access to the user, so we can log them in right away afer registry
+      const user = await User.register(new User(req.body), req.body.password);
+      console.log('user registered!');
+      // create a session
+      req.login(user, function(err) {
+        if (err) return next(err);
+        req.session.success = `Welcome to Surf Shop, ${user.username}!`;
+        res.redirect('/');
+      });
+    } catch(err) {
+      console.log(err);
+      // deconstruct req.body so username and email have their own variables
+      const { username, email } = req.body;
+      let error = err.message;
+      if(error.includes('duplicate') && error.includes('index: email_1 dup key')) {
+        error = 'A user with the given email is already registered';
+      }
+      res.render('register', { title: 'Register', username, email, error });
+    }
 },
 
 // GET /login
@@ -42,11 +50,28 @@ getLogin(req, res, next) {
 },
 
 // login user - POST /login
-  postLogin(req, res, next) {
-    passport.authenticate('local', {
-      successRedirect: '/',
-      failureRedirect: '/login'
-    })(req, res, next);
+  async postLogin(req, res, next) {
+    // deconstruct req.body, pull out username and password, giving us access to them as variables
+    const { username, password } = req.body;
+    // invoke User.authenticate twice (invoke the function returned and pass in the arguments it expects (username and password).
+    // returns a user or error depending if authenticated.
+    const { user, error } = await User.authenticate()(username, password);
+    // if there is an error bounce the error to next
+    if(!user && error) return next (error);
+    // if they are authentic
+    req.login(user, function(err){
+      // if there is an error bounce the error to next
+      if(err) return next(err);
+      // else crete a welcome flash message
+      req.session.success = `Welcome back, ${username}!`;
+      // pull the redirectTo from the session, assign to variable
+      const redirectUrl = req.session.redirectTo || '/';
+      // remove the session redirectTo so it's not floating around anymore
+      delete req.session.redirectTo;
+      // and then redirect them
+      res.redirect(redirectUrl);
+    });
+
   },
 
 // logout user - GET /logout
