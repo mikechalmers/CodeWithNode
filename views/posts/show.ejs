@@ -34,6 +34,9 @@
 <% if (Array.isArray(post.geometry.coordinates) && post.geometry.coordinates.length) { %>
 <div id='map'></div> <!-- mapbox map -->
 <% } %>
+
+<%# Is the user a) logged in and b) is it the author of this post %>
+<% if (currentUser && post.author.equals(currentUser._id)) { %>
 <div class="">
   <a href="/posts/<%= post.id %>/edit">
     <button>Edit</button>
@@ -44,6 +47,8 @@
     <input type="submit" value="Delete">
   </form>
 </div>
+<% } %>
+
 <div class="">
   <a href="/posts">Back to Index</a>
 </div>

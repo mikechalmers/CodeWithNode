@@ -46,6 +46,11 @@ module.exports = {
 
 // GET /login
 getLogin(req, res, next) {
+  // isAuthenticated is a Passport method that gives boolean value
+  // self-contained if statement, no need for curly brackets
+  // redirect to home if already logged in
+  if(req.isAuthenticated()) return res.redirect('/');
+  // otherwise render the login page
   res.render('login', { title: 'Login' });
 },
 

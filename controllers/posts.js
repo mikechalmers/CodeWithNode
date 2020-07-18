@@ -59,6 +59,12 @@ async postCreate(req, res, next){
   // instead we will take more than just coordinates for new Geometry object in Post schema
   req.body.post.geometry = match.body.features[0].geometry;
 
+  console.log("req.user._id = " + req.user._id);
+
+  // store the ID of the user as the author of the post
+  req.body.post.author = req.user._id;
+
+  console.log("req.body.post.author = " + req.body.post.author);
 
   // post all the user inputted data into the database as a Post
   // let post = await Post.create(req.body.post);
@@ -101,8 +107,7 @@ async postShow(req, res, next){
 
 // Posts edit
 async postEdit(req, res, next){
-  let post = await Post.findById(req.params.id);
-  res.render('posts/edit', { post });
+  res.render('posts/edit');
 },
 
 // Post update
@@ -110,7 +115,10 @@ async postUpdate(req, res, next){
 
   // get access to the post we want to edit by ID
 
-  let post = await Post.findById(req.params.id);
+  // let post = await Post.findById(req.params.id);
+  // now that the post is being passed from middleware via res.locals, we can instead deconstruct to use current post
+
+  const { post } = res.locals;
 
   // Update IMAGES
 
@@ -225,7 +233,8 @@ async postUpdate(req, res, next){
 
 // Post destroy
 async postDestroy(req, res, next){
-  let post = await Post.findById(req.params.id);
+  // deconstruct res.locals for the post that was passed from middleware
+  const { post } = res.locals;
   for (const image of post.images) {
     await cloudinary.v2.uploader.destroy(image.public_id);
   }
