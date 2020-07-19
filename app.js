@@ -9,7 +9,7 @@ const path            = require('path');
 const favicon         = require('serve-favicon');
 const cookieParser    = require('cookie-parser');
 const logger          = require('morgan');
-const bodyParser      = require('body-parser');
+// const bodyParser      = require('body-parser'); now built-in to Express
 const passport        = require('passport');
 const session         = require('express-session');
 const mongoose        = require('mongoose');
@@ -48,9 +48,9 @@ db.once('open', () => {
 
 app.use(logger('dev'));
 // parse form data and make it available as req.body.[something]
-app.use(bodyParser.json());
+app.use(express.json());
 // The "extended" syntax allows for rich objects and arrays to be encoded into the URL-encoded format, allowing for a JSON-like experience with URL-encoded
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 // look in public for static files

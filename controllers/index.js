@@ -50,6 +50,9 @@ getLogin(req, res, next) {
   // self-contained if statement, no need for curly brackets
   // redirect to home if already logged in
   if(req.isAuthenticated()) return res.redirect('/');
+  // use <a href="/login?returnTo=true"> to redirect to same page
+  // again, is self-contained so doesn't need brackets (important: on one line)
+  if(req.query.returnTo) req.session.redirectTo = req.headers.referer;
   // otherwise render the login page
   res.render('login', { title: 'Login' });
 },

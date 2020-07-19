@@ -106,7 +106,7 @@ async postShow(req, res, next){
 },
 
 // Posts edit
-async postEdit(req, res, next){
+postEdit(req, res, next){
   res.render('posts/edit');
 },
 
@@ -222,9 +222,9 @@ async postUpdate(req, res, next){
   post.price = req.body.post.price;
   post.properties.description = `<strong><a href="/posts/${post._id}">${post.title}</a></strong><p>${post.location}</p><p>${post.description.substring(0, 20)}...</p>`;
 
-  // and save
+  // and save - using await so it's saved before we render the updated page
 
-  post.save();
+  await post.save();
 
   // go back to Post show page
 
