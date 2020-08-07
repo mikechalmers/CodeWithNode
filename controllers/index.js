@@ -3,7 +3,8 @@
 const User          = require('../models/user');
 const Post          = require('../models/post');
 const passport      = require('passport');
-const mapBoxToken = process.env.MAPBOX_TOKEN;
+const mapBoxToken   = process.env.MAPBOX_TOKEN;
+const util          = require('util');
 
 module.exports = {
 // GET /
@@ -93,6 +94,24 @@ getLogin(req, res, next) {
     // user Mongoose methods to get latest posts by this user
     const posts = await Post.find().where('author').equals(req.user._id).limit(10).exec();
     res.render('profile', { posts });
+  },
+
+  async updateProfile(req, res, next) {
+    const {
+    username,
+    email
+    } = req.body;
+    const { user } = res.locals;
+    if (username) user.username = username;
+    if (email) user.email = email;
+    await user.save();
+    // user node's util promisify to use promise instead of callback
+    // need to pass in req so req.login has access to it when promisified by using bind (req = context / THIS)
+    const login = util.promisify(req.login.bind(req));
+    // start new session with updated profile
+    await login(user);
+    req.session.success = 'Profile successfully updated';
+    res.redirect('/profile');
   }
 
 };
