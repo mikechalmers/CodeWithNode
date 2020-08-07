@@ -86,7 +86,15 @@ getLogin(req, res, next) {
   getLogout(req, res, next) {
     req.logout();
     res.redirect('/');
+  },
+
+  // User PROFILE GET /profile
+  async getProfile(req, res, next) {
+    // user Mongoose methods to get latest posts by this user
+    const posts = await Post.find().where('author').equals(req.user._id).limit(10).exec();
+    res.render('profile', { posts });
   }
+
 };
 
 // User.register(newUser, req.body.password, (err) => {
