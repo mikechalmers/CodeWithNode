@@ -1,5 +1,5 @@
 <% layout('layouts/boilerplate') -%>
-<h1><%= currentUser.username %>'s Profile</h1>
+<h1><img src="<%= currentUser.image.secure_url %>" alt="<%= currentUser.username %>" class="profile-image"><%= currentUser.username %>'s Profile</h1>
 
 <p>Recent Posts:</p>
 
@@ -14,7 +14,7 @@
 
 <p>Update Info</p>
 
-<form action="/profile?_method=PUT" method="POST">
+<form action="/profile?_method=PUT" method="POST" enctype="multipart/form-data">
 
   <div class="">
     <label for="username">Username:</label>
@@ -39,6 +39,7 @@
   </div>
   <div class="">
     <label for="image"></label>
+    <small>(this deletes existing image)</small>
     <input type="file" id="image" name="image">
   </div>
 

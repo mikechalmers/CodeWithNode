@@ -5,6 +5,8 @@ const Post          = require('../models/post');
 const passport      = require('passport');
 const mapBoxToken   = process.env.MAPBOX_TOKEN;
 const util          = require('util');
+const { cloudinary } = require('../cloudinary');
+const { deleteProfileImage } = require('../middleware');
 
 module.exports = {
 // GET /
@@ -24,6 +26,10 @@ module.exports = {
     console.log('registering user');
     // catch any errors early for custom error handling
     try {
+      if (req.file) {
+        const { secure_url, public_id} = req.file;
+        req.body.image = { secure_url, public_id };
+      }
       // this allows us to have access to the user, so we can log them in right away afer registry
       const user = await User.register(new User(req.body), req.body.password);
       console.log('user registered!');
@@ -35,6 +41,7 @@ module.exports = {
       });
     } catch(err) {
       console.log(err);
+      deleteProfileImage(req);
       // deconstruct req.body so username and email have their own variables
       const { username, email } = req.body;
       let error = err.message;
@@ -104,6 +111,11 @@ getLogin(req, res, next) {
     const { user } = res.locals;
     if (username) user.username = username;
     if (email) user.email = email;
+    if (req.file) {
+      if (user.image.public_id) await cloudinary.v2.uploader.destroy(user.image.public_id);
+      const { secure_url, public_id } = req.file;
+      user.image = { secure_url, public_id };
+    }
     await user.save();
     // user node's util promisify to use promise instead of callback
     // need to pass in req so req.login has access to it when promisified by using bind (req = context / THIS)
