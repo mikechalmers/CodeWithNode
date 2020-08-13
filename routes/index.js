@@ -12,7 +12,11 @@ const {
   postLogin,
   getLogout,
   getProfile,
-  updateProfile
+  updateProfile,
+  getForgotPassword,
+  putForgotPassword,
+  getResetPassword,
+  putResetPassword
 } = require('../controllers');
 const {
   asyncErrorHandler,
@@ -52,24 +56,16 @@ router.put('/profile',
 );
 
 /* GET forgot password. */
-router.get('/forgot', (req, res, next) => {
-  res.send("this be the GET forgot password");
-});
+router.get('/forgot-password', getForgotPassword);
 
-/* GET forgot password. */
-router.put('/forgot', (req, res, next) => {
-  res.send("this be the PUT forgot password");
-});
+/* PUT forgot password. */
+router.put('/forgot-password', asyncErrorHandler(putForgotPassword));
 
 /* GET reset password with token. */
-router.get('/reset/:token', (req, res, next) => {
-  res.send("this be the GET reset password with token");
-});
+router.get('/reset/:token', asyncErrorHandler(getResetPassword));
 
 /* PUT reset password with token. */
-router.put('/reset/:token', (req, res, next) => {
-  res.send("this be the PUT reset password with token");
-});
+router.put('/reset/:token', asyncErrorHandler(putResetPassword));
 
 
 module.exports = router;
