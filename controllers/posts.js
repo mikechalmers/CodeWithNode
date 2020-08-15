@@ -8,8 +8,10 @@ const { cloudinary } = require('../cloudinary');
 // Posts Index
 module.exports = {
   async postIndex(req, res, next){
+    const { dbQuery } = res.locals;
+    delete res.locals.dbQuery;
     // swap .find({}) for .paginate - in both we're querying for all posts
-    let posts = await Post.paginate({}, {
+    let posts = await Post.paginate(dbQuery, {
       // what page was queried - otherwise page 1
       page: req.query.page || 1,
       // sort like mongoose, object and string
@@ -19,6 +21,9 @@ module.exports = {
       limit: 10
     });
     posts.page = Number(posts.page);
+    if (!posts.docs.length && res.locals.query) {
+      res.locals.error = 'No results match that query';
+    }
     res.render('posts/index', { posts, title: 'Posts Index', mapBoxToken });
   },
 
@@ -100,7 +105,12 @@ async postShow(req, res, next){
       model: 'User'
     }
   });
-  const floorRating = post.calculateAvgRating();
+
+  // const floorRating = post.calculateAvgRating();
+
+  // used for seeded posts. Remove and uncomment above in production
+  const floorRating = post.avgRating;
+
   // console.log(post);
   res.render('posts/show', { post, mapBoxToken, floorRating });
 },
