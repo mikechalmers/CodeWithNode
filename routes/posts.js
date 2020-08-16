@@ -6,7 +6,8 @@ const { storage }                 = require('../cloudinary');
 const upload                      = multer({ storage });
 const { asyncErrorHandler,
         isLoggedIn,
-        isAuthor
+        isAuthor,
+        searchAndFilterPosts
       }       = require('../middleware');
 const { postIndex,
         postNew,
@@ -18,7 +19,7 @@ const { postIndex,
       } = require('../controllers/posts');
 
 /* GET posts index /posts */
-router.get('/', asyncErrorHandler(postIndex));
+router.get('/', asyncErrorHandler(searchAndFilterPosts), asyncErrorHandler(postIndex));
 
 /* GET new post /posts/new */
 router.get('/new', isLoggedIn, postNew);
